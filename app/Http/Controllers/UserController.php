@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -11,7 +12,10 @@ class UserController extends Controller
     //index
     public function index()
     {
-        $users = User::paginate(5);
+        $users =DB::table('users')->when(request()->search, function($query){
+            $query->where('name', 'like', '%'.request()->search.'%')
+            ->orWhere('email', 'like', '%'.request()->search.'%');
+        })->paginate(5);
         return view('pages.users.index', compact('users'));
     }
 
@@ -28,18 +32,16 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required|min:6',
+            'phone' => 'required',
+            'role' => 'required',
         ]);
 
-        //store the data
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->save();
+        //store all the data
+        User::create($request->all());
 
         //redirect
-        return redirect()->route('pages.users.index');
+        return redirect()->route('users.index')->with('message', 'User created successfully');
     }
 
     //edit
@@ -75,14 +77,7 @@ class UserController extends Controller
     {
         $user = User::find($id);
         $user->delete();
-        return redirect()->route('pages.users.index');
+        return redirect()->route('users.index')->with('message', 'User deleted successfully');
     }
 
-    //search
-    public function search(Request $request)
-    {
-        $search = $request->search;
-        $users = User::where('name', 'like', "%$search%")->get();
-        return view('pages.users.index', compact('users'));
-    }
 }

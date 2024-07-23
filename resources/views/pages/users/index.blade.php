@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Dashboard</title>
+    <title>Users</title>
     @include('template.head')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -31,9 +31,14 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
                         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            @include('layouts.alert')
+                        </div>
                     </div>
 
                     <!-- Content Row -->
@@ -45,17 +50,25 @@
                         <div class="col-xl-12 col-lg-7">
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Users</h6>
-                                    <div class="section-header-button">
-                                        <a href="{{ route('users.create') }}" class="btn btn-primary">Add New</a>
+                                    <div class="section-header-button row">
+                                        <a href="{{ route('users.create') }}" class="btn btn-primary mr-4">Add New</a>
+                                        <form action="{{ route('users.index') }}" method="GET">
+                                            <div class="input-group">
+                                                <input type="text" name="search" class="form-control" placeholder="Search...">
+                                                <button type="submit" class="btn btn-primary">Search</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
                                     @include('layouts.alert')
                                     <div class="table-responsive">
-                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <table class="table table-bordered" id="dataTable" width="100%"
+                                            cellspacing="0">
                                             <thead>
                                                 <tr>
                                                     <th>Name</th>
@@ -69,25 +82,28 @@
 
                                             <tbody>
                                                 @foreach ($users as $user)
-                                                <tr>
-                                                    <td>{{ $user->name }}</td>
-                                                    <td>{{ $user->email }}</td>
-                                                    <td>{{ $user->phone }}</td>
-                                                    <td>{{ $user->role }}</td>
-                                                    <td>{{ $user->created_at }}</td>
-                                                    <td>
-                                                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-info">
-                                                            <i class="fas fa-edit"></i> Edit
-                                                        </a>
-                                                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this user?');">
-                                                                <i class="fas fa-trash"></i> Delete
-                                                            </button>
-                                                        </form>
-                                                    </td>
-                                                </tr>
+                                                    <tr>
+                                                        <td>{{ $user->name }}</td>
+                                                        <td>{{ $user->email }}</td>
+                                                        <td>{{ $user->phone }}</td>
+                                                        <td>{{ $user->role }}</td>
+                                                        <td>{{ $user->created_at }}</td>
+                                                        <td>
+                                                            <a href="{{ route('users.edit', $user->id) }}"
+                                                                class="btn btn-sm btn-info">
+                                                                <i class="fas fa-edit"></i> Edit
+                                                            </a>
+                                                            <form action="{{ route('users.destroy', $user->id) }}"
+                                                                method="POST" style="display:inline;">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-sm btn-danger"
+                                                                    onclick="return confirm('Are you sure you want to delete this user?');">
+                                                                    <i class="fas fa-trash"></i> Delete
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
@@ -122,7 +138,8 @@
     </a>
 
     <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
